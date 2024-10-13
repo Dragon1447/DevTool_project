@@ -1,0 +1,97 @@
+{% extends 'navbar_doctor.html' %}
+{% load static %}
+
+{% block content %}
+<script src="{% static '../static/js/medicine_patient_list.js' %}"></script>
+<div class="container mx-auto px-4 py-8 flex flex-col min-h-screen justify-between">
+    <div>
+        <div class="flex justify-between items-center mb-4">
+            <div class="back-page flex gap-3 ml-3">
+                <a href="/treatment/medicine/">
+                    <i class="fa-solid fa-arrow-left p-3 bg-white rounded-full border shadow-lg"></i>
+                </a>
+                <h2 class="text-4xl font-semibold text-[#008DDA]">Medicine List</h2>
+            </div>
+            <div class="flex gap-5 mr-5">
+                <button onclick="displayCartTable()" class="px-4 py-2 rounded-full flex items-center text-black bg-white border border-black">
+                    <i class="fa-solid fa-tablets mr-2"></i> Show Medicine
+                </button>
+                <button onclick="toggleForm()" class="px-4 py-2 rounded-full flex items-center bg-[#008DDA] text-white">
+                    Add Appointment <span class="ml-2 text-2xl">+</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Combine both forms into one -->
+        <form method="POST" action="{% url 'medicine-patient-list' %}" class="flex-grow">
+            {% csrf_token %}
+
+            <!-- Medicine Table -->
+            <table class="w-full ml-4 mb-8">
+                <thead>
+                    <tr class="text-left">
+                        <th class="pb-4">Name</th>
+                        <th class="pb-4">Quantity</th>
+                        <th class="pb-4">Take per dose</th>
+                        <th class="pb-4">Time To Take</th>
+                        <th class="pb-4">More details</th>
+                        <th class="pb-4">Notification</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-table-body">
+                    <!-- Rows will be added here dynamically -->
+                </tbody>
+            </table>
+
+            <!-- Appointment Form -->
+            <div id="appointment-form" class="bg-blue-50 rounded-lg p-6 border border-gray-300 hidden">
+                <h2 class="text-3xl font-bold mb-4">Appointment</h2>
+
+                <!-- Hidden input for notification -->
+                <input type="hidden" id="appointment_notification" name="appointment_notification" value="false">
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="doctor" class="block mb-2">Doctor:</label>
+                        <input type="text" id="doctor" name="doctor" value="Doctor Drakit" class="w-full p-2 border rounded bg-gray-100" readonly="">
+                    </div>
+                    <div>
+                        <label for="patient" class="block mb-2">Patient:</label>
+                        <input type="text" id="patient" name="patient" value="Jeena Kerdkaew" class="w-full p-2 border rounded bg-gray-100" readonly="">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="date" class="block mb-2">Date:</label>
+                        <input type="date" id="date" name="date" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="time" class="block mb-2">Time:</label>
+                        <select id="time" name="time" class="w-full p-2 border rounded">
+                            <option value="" disabled="" selected="">Select time</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="detail" class="block mb-2">Detail:</label>
+                    <textarea id="detail" name="detail" rows="3" class="w-full p-2 border rounded"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="bg-[#008DDA] ml-4 mt-4 text-2xl text-white px-6 py-2 rounded-full shadow-xl">
+                Submit
+            </button>
+        </form>
+    </div>
+
+    <!-- Submit Button at the bottom -->
+</div>
+
+{% endblock %}

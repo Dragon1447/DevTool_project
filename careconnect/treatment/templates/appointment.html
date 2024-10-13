@@ -1,0 +1,67 @@
+{% extends 'navbar_doctor.html' %}
+{% load static %}
+{% load tags %}
+{% block content %}
+    <div class="m-6 pr-10 flex justify-between relative">
+        <input type="text" id="search" placeholder="Search" class="w-full bg-[#C2DBE9] text-white px-4 py-3 rounded-full pl-10">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-white"></i>
+    </div>
+    <div class="h-screen container mx-auto px-8 py-2 overflow-hidden">
+        <div class="header sticky top-0 z-10 mb-6">
+            <h1 class="text-[#008DDA] text-4xl font-bold mb-6">Appointment</h1>
+            <form method="get" class="flex gap-6" id="dateForm">
+                {{ form.date|add_class:"border-2 text-gray-700 rounded-lg py-2 px-4" }}
+            </form>
+        </div>
+        <main class="overflow-y-auto h-[calc(100vh-120px)]"> <!-- Adjusted the height -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 pb-20">
+                {% for appointment in appointments %}
+                <div class="appointment-item bg-white text-gray-900 rounded-lg p-6 flex flex-col justify-between shadow-xl border">
+                    <!-- Order Header -->
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-[#008DDA]">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h3>
+                        <span class="text-gray-600">Doctor {{ appointment.doctor.first_name }}</span>
+                    </div>
+
+                    <!-- Order Date and Time -->
+                    <p class="text-gray-600">{{ appointment.date|date:"d M Y" }},  {{ appointment.time }}</p>
+
+                    <hr class="border-t border-gray-300 my-4">
+
+                    <h2 class="text-l font-bold mb-1">Detail</h2>
+                    <p class="pl-4 mb-4">{{ appointment.detail }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderDateInput = document.querySelector('input[name="date"]'); // Adjust the selector if needed
+
+            orderDateInput.addEventListener('change', function() {
+                document.getElementById('dateForm').submit();
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('search').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                document.querySelectorAll('.appointment-item').forEach(item => {
+                    const patientName = item.querySelector('h3').textContent.toLowerCase();
+                    const doctorName = item.querySelector('span').textContent.toLowerCase();
+
+                    // Check if the search term is included in either the patient's name or the doctor's name
+                    if (patientName.includes(searchTerm) || doctorName.includes(searchTerm)) {
+                        item.style.display = 'block'; // Show item
+                    } else {
+                        item.style.display = 'none'; // Hide item
+                    }
+                });
+            });
+        });
+
+    </script>
+{% endblock %}
+
+

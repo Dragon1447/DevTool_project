@@ -1,0 +1,91 @@
+{% extends 'navbar_admin.html' %}
+{% load static %}
+
+{% block content %}
+<script src="{% static '../static/js/doctor.js' %}"></script>
+
+<div class="container mx-auto w-full flex">
+  <!-- Left Panel: Employee List -->
+  <div class="w-2/3 text-white px-6 sticky top-0 h-screen overflow-y-scroll bg-white border">
+    <div class="sticky top-0 z-10">
+      <!-- Search Bar -->
+      <div class="mt-6 mb-6 flex justify-between relative">
+        <input type="text" id="search" placeholder="Search" class="w-full bg-[#C2DBE9] text-white px-4 py-3 rounded-full pl-10">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-white"></i>
+      </div>
+
+      <!-- Manager Section -->
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-4xl font-semibold text-[#008DDA] p-3">Doctor</h2>
+        <button onclick="render('add_doctor')" class="px-4 py-2 rounded-full flex items-center text-white" style="background-color:#008DDA;">
+          Add Doctor <span class="ml-2 text-2xl">+</span>
+        </button>
+      </div>
+
+      <!-- Doctor Cards -->
+      <div class="grid grid-cols-3 gap-2">
+        {% for item in doctor %}
+        <!-- Doctor Card -->
+        <div class="doctor-item p-4 rounded-lg flex items-center justify-between w-60 h-20 border shadow-xl"
+          data-id="{{ item.id }}"
+          data-first-name="{{ item.first_name }}"
+          data-last-name="{{ item.last_name }}"
+          data-contact-number="{{ item.contact_number }}">
+          <div class="flex items-center space-x-4">
+            <div class="w-10 h-10 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center">
+              {{ item.first_name|slice:":1" }}
+            </div>
+            <div>
+              <h3 class="font-semibold text-[#008DDA]">{{ item.first_name }}</h3>
+              <p class="text-black text-sm">{{ item.contact_number }}</p>
+            </div>
+          </div>
+          <button onclick="render('edit_doctor', {{ item.id }})">
+            <i class="fa-solid fa-pen text-black"></i>
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Section (Edit Form) -->
+  <div id="edit-doctor" class="w-1/3 border p-6 sticky top-0 h-screen overflow-y-scroll hidden">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-[#008DDA]">Edit Doctor</h2>
+    </div>
+
+    <form id="edit-form" method="post">
+      {% csrf_token %}
+      <input type="hidden" id="doctor-id" class="w-full p-2 mb-4 border rounded"/>
+
+      <label class="block mb-2">First Name</label>
+      <input type="text" id="first-name" class="w-full p-2 mb-4 border rounded" />
+
+      <label class="block mb-2">Last Name</label>
+      <input type="text" id="last-name" class="w-full p-2 mb-4 border rounded" />
+
+      <label class="block mb-2">Contact Number</label>
+      <input type="text" id="contact-number" class="w-full p-2 mb-4 border rounded" />
+
+      <div class="flex justify-center border-t pt-4 mt-4">
+        <!-- Save Button -->
+        <button type="submit" onclick="updateDoctor()" class="w-24 bg-[#008DDA] text-white py-3 rounded-full hover:bg-blue-300 mr-5">Save</button>
+        <!-- Delete Button -->
+        <button type="submit" onclick="deleteDoctor()" class="w-24 bg-red-500 text-white py-3 rounded-full hover:bg-red-800">Delete</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Right Section (Add Employee Form) -->
+  <div id="add-doctor" class="w-1/3 p-6 sticky top-0 h-screen overflow-y-scroll hidden">
+    <h2 class="text-2xl font-semibold mb-6 text-[#008DDA]">Add Doctor</h2>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="w-full bg-[#008DDA] text-white py-3 rounded-full hover:bg-blue-300 transition duration-300">Submit</button>
+    </form>
+  </div>
+
+</div>
+{% endblock %}
